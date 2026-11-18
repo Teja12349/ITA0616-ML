@@ -1,0 +1,360 @@
+{% extends 'base.html' %}
+
+{% block title %}Module 1 - Fluid Dynamics Data Acquisition & Analysis{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <span class="badge bg-cyan text-dark fw-bold px-3 py-2 mb-1">MODULE 1</span>
+        <h2 class="font-outfit fw-bold text-white mb-0">Fluid Dynamics Data Acquisition & Analysis</h2>
+        <p class="text-secondary small mb-0">Upload CSV sensor telemetry, execute data cleaning pipeline, compute fluid dynamic metrics, and inspect engineered features.</p>
+    </div>
+    <div>
+        <button class="btn btn-cyan btn-sm" id="btnRunPreprocessing">
+            <i class="fa-solid fa-wand-magic-sparkles me-1"></i> Execute Preprocessing
+        </button>
+    </div>
+</div>
+
+<!-- Row 1: CSV Upload & Sensor Parameters Support -->
+<div class="row g-4 mb-4">
+    <!-- Dataset Upload Box -->
+    <div class="col-lg-6">
+        <div class="card-industrial h-100">
+            <div class="card-header-industrial">
+                <h5 class="card-title-industrial text-white">
+                    <i class="fa-solid fa-cloud-arrow-up text-cyan me-2"></i>1. Dataset Telemetry Upload
+                </h5>
+                <span class="badge bg-dark border border-secondary" id="activeFilename">sample_pump_data.csv</span>
+            </div>
+            <div class="card-body-industrial">
+                <form id="uploadForm" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="csvFileInput" class="form-label text-secondary small fw-bold">Select CSV Telemetry File</label>
+                        <input class="form-control form-control-industrial" type="file" id="csvFileInput" accept=".csv" required>
+                        <div class="form-text text-muted">Supports CSV with columns: pressure, flow_rate, temperature, vibration, rpm, motor_current, pump_head.</div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary btn-sm px-3" id="btnUploadSubmit">
+                            <i class="fa-solid fa-upload me-1"></i> Upload Dataset
+                        </button>
+                        <button type="button" class="btn btn-outline-cyan btn-sm px-3" id="btnLoadSampleModule1">
+                            <i class="fa-solid fa-file-csv me-1"></i> Use Sample Pump Data
+                        </button>
+                    </div>
+                </form>
+
+                <hr class="border-secondary my-3">
+
+                <!-- Upload Summary Metrics -->
+                <div class="row text-center g-2" id="uploadMetricsBox">
+                    <div class="col-4">
+                        <div class="p-2 bg-dark rounded border border-dark">
+                            <small class="text-secondary d-block">Records</small>
+                            <span class="fw-bold text-cyan h5 mb-0" id="statRecordCount">--</span>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-2 bg-dark rounded border border-dark">
+                            <small class="text-secondary d-block">Columns</small>
+                            <span class="fw-bold text-cyan h5 mb-0" id="statColCount">--</span>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-2 bg-dark rounded border border-dark">
+                            <small class="text-secondary d-block">Validation</small>
+                            <span class="badge badge-normal" id="statValidation">VALID CSV</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supported Sensor Parameters Grid -->
+    <div class="col-lg-6">
+        <div class="card-industrial h-100">
+            <div class="card-header-industrial">
+                <h5 class="card-title-industrial text-white">
+                    <i class="fa-solid fa-microchip text-emerald me-2"></i>2. Supported Sensor Telemetry Parameters
+                </h5>
+            </div>
+            <div class="card-body-industrial">
+                <div class="row g-2">
+                    <div class="col-6 col-md-4">
+                        <div class="p-2 bg-dark rounded border border-dark text-start">
+                            <i class="fa-solid fa-gauge-high text-cyan me-1"></i>
+                            <span class="fw-semibold text-white small">Pressure</span>
+                            <small class="d-block text-muted">bar / kPa</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <div class="p-2 bg-dark rounded border border-dark text-start">
+                            <i class="fa-solid fa-water text-cyan me-1"></i>
+                            <span class="fw-semibold text-white small">Flow Rate</span>
+                            <small class="d-block text-muted">L/min</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <div class="p-2 bg-dark rounded border border-dark text-start">
+                            <i class="fa-solid fa-temperature-three-quarters text-amber me-1"></i>
+                            <span class="fw-semibold text-white small">Temperature</span>
+                            <small class="d-block text-muted">°C</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <div class="p-2 bg-dark rounded border border-dark text-start">
+                            <i class="fa-solid fa-wave-square text-rose me-1"></i>
+                            <span class="fw-semibold text-white small">Vibration</span>
+                            <small class="d-block text-muted">mm/s RMS</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <div class="p-2 bg-dark rounded border border-dark text-start">
+                            <i class="fa-solid fa-rotate text-emerald me-1"></i>
+                            <span class="fw-semibold text-white small">RPM</span>
+                            <small class="d-block text-muted">Rev / Min</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <div class="p-2 bg-dark rounded border border-dark text-start">
+                            <i class="fa-solid fa-bolt text-warning me-1"></i>
+                            <span class="fw-semibold text-white small">Motor Current</span>
+                            <small class="d-block text-muted">Amperes (A)</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <div class="p-2 bg-dark rounded border border-dark text-start">
+                            <i class="fa-solid fa-arrow-up-from-ground-water text-cyan me-1"></i>
+                            <span class="fw-semibold text-white small">Pump Head</span>
+                            <small class="d-block text-muted">Meters (m)</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <div class="p-2 bg-dark rounded border border-dark text-start">
+                            <i class="fa-solid fa-clock text-secondary me-1"></i>
+                            <span class="fw-semibold text-white small">Operating Hours</span>
+                            <small class="d-block text-muted">Hours</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <div class="p-2 bg-dark rounded border border-dark text-start">
+                            <i class="fa-solid fa-shield-halved text-emerald me-1"></i>
+                            <span class="fw-semibold text-white small">Failure Status</span>
+                            <small class="d-block text-muted">0:Norm 1:Warn 2:Fail</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Row 2: Preprocessing Statistics -->
+<div class="card-industrial mb-4">
+    <div class="card-header-industrial">
+        <h5 class="card-title-industrial text-white">
+            <i class="fa-solid fa-filter text-amber me-2"></i>3. Data Preprocessing & Cleaning Pipeline
+        </h5>
+        <span class="badge bg-dark border border-secondary" id="prepStatusBadge">Cleaned & Scaled</span>
+    </div>
+    <div class="card-body-industrial">
+        <div class="row g-3 mb-3">
+            <div class="col-md-3">
+                <div class="p-3 bg-dark rounded border border-dark">
+                    <div class="text-secondary small">Missing Values Detected</div>
+                    <div class="h4 font-outfit text-amber fw-bold mb-0" id="prepMissingCount">0</div>
+                    <small class="text-muted">Mean Imputation Applied</small>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="p-3 bg-dark rounded border border-dark">
+                    <div class="text-secondary small">Duplicates Removed</div>
+                    <div class="h4 font-outfit text-cyan fw-bold mb-0" id="prepDuplicateCount">0</div>
+                    <small class="text-muted">Row Deduplication</small>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="p-3 bg-dark rounded border border-dark">
+                    <div class="text-secondary small">Outliers Handled</div>
+                    <div class="h4 font-outfit text-rose fw-bold mb-0" id="prepOutlierCount">0</div>
+                    <small class="text-muted">IQR 1.5 Capped Bounds</small>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="p-3 bg-dark rounded border border-dark">
+                    <div class="text-secondary small">Noise Reduction & Scaling</div>
+                    <div class="h4 font-outfit text-emerald fw-bold mb-0">MinMax</div>
+                    <small class="text-muted">Rolling Filter + MinMax Scaler</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Row 3: Fluid Dynamics Analysis Metrics & Operating Condition -->
+<div class="card-industrial mb-4">
+    <div class="card-header-industrial">
+        <h5 class="card-title-industrial text-white">
+            <i class="fa-solid fa-calculator text-cyan me-2"></i>4. Fluid Dynamics Analysis Calculations
+        </h5>
+    </div>
+    <div class="card-body-industrial">
+        <div class="row g-3">
+            <div class="col-md-2 col-6">
+                <div class="p-3 bg-dark rounded border border-dark text-center">
+                    <small class="text-secondary d-block">Pressure Delta (&Delta;P)</small>
+                    <span class="h4 font-outfit text-cyan fw-bold mb-0" id="fluidPressureDiff">--</span>
+                    <small class="text-muted d-block">bar</small>
+                </div>
+            </div>
+            <div class="col-md-2 col-6">
+                <div class="p-3 bg-dark rounded border border-dark text-center">
+                    <small class="text-secondary d-block">Flow Variance</small>
+                    <span class="h4 font-outfit text-cyan fw-bold mb-0" id="fluidFlowStd">--</span>
+                    <small class="text-muted d-block">L/min std</small>
+                </div>
+            </div>
+            <div class="col-md-2 col-6">
+                <div class="p-3 bg-dark rounded border border-dark text-center">
+                    <small class="text-secondary d-block">Temperature Mean</small>
+                    <span class="h4 font-outfit text-amber fw-bold mb-0" id="fluidTempMean">--</span>
+                    <small class="text-muted d-block">°C</small>
+                </div>
+            </div>
+            <div class="col-md-2 col-6">
+                <div class="p-3 bg-dark rounded border border-dark text-center">
+                    <small class="text-secondary d-block">Pump Head (Avg)</small>
+                    <span class="h4 font-outfit text-emerald fw-bold mb-0" id="fluidHeadMean">--</span>
+                    <small class="text-muted d-block">meters</small>
+                </div>
+            </div>
+            <div class="col-md-2 col-6">
+                <div class="p-3 bg-dark rounded border border-dark text-center">
+                    <small class="text-secondary d-block">Vibration RMS</small>
+                    <span class="h4 font-outfit text-rose fw-bold mb-0" id="fluidVibRMS">--</span>
+                    <small class="text-muted d-block">mm/s</small>
+                </div>
+            </div>
+            <div class="col-md-2 col-6">
+                <div class="p-3 bg-dark rounded border border-dark text-center">
+                    <small class="text-secondary d-block">System Condition</small>
+                    <span class="badge badge-normal d-block mt-2" id="fluidOpCondition">NORMAL</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Interactive Fluid Dynamics Graphs Grid -->
+<div class="row g-4 mb-4">
+    <div class="col-lg-4 col-md-6">
+        <div class="card-industrial">
+            <div class="card-header-industrial py-2">
+                <span class="small font-outfit text-cyan fw-bold">Pressure vs Time</span>
+            </div>
+            <div class="card-body-industrial p-2">
+                <canvas id="chartPressure" height="180"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-md-6">
+        <div class="card-industrial">
+            <div class="card-header-industrial py-2">
+                <span class="small font-outfit text-cyan fw-bold">Flow Rate vs Time</span>
+            </div>
+            <div class="card-body-industrial p-2">
+                <canvas id="chartFlow" height="180"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-md-6">
+        <div class="card-industrial">
+            <div class="card-header-industrial py-2">
+                <span class="small font-outfit text-amber fw-bold">Temperature vs Time</span>
+            </div>
+            <div class="card-body-industrial p-2">
+                <canvas id="chartTemp" height="180"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-md-6">
+        <div class="card-industrial">
+            <div class="card-header-industrial py-2">
+                <span class="small font-outfit text-rose fw-bold">Vibration vs Time</span>
+            </div>
+            <div class="card-body-industrial p-2">
+                <canvas id="chartVib" height="180"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-md-6">
+        <div class="card-industrial">
+            <div class="card-header-industrial py-2">
+                <span class="small font-outfit text-emerald fw-bold">RPM vs Time</span>
+            </div>
+            <div class="card-body-industrial p-2">
+                <canvas id="chartRPM" height="180"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-md-6">
+        <div class="card-industrial">
+            <div class="card-header-industrial py-2">
+                <span class="small font-outfit text-warning fw-bold">Pressure vs Flow Rate (Pump Curve)</span>
+            </div>
+            <div class="card-body-industrial p-2">
+                <canvas id="chartPumpCurve" height="180"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Row 5: Feature Engineering Table -->
+<div class="card-industrial mb-4">
+    <div class="card-header-industrial">
+        <h5 class="card-title-industrial text-white">
+            <i class="fa-solid fa-table-list text-cyan me-2"></i>5. Feature Engineering Table (Engineered ML Predictors)
+        </h5>
+        <span class="badge bg-dark border border-secondary" id="featureCountBadge">8 Features Generated</span>
+    </div>
+    <div class="card-body-industrial p-0">
+        <div class="table-responsive" style="max-height: 380px;">
+            <table class="table table-industrial table-hover mb-0" id="featureTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Timestamp</th>
+                        <th>Mean Pressure</th>
+                        <th>Pressure Diff</th>
+                        <th>Flow Var</th>
+                        <th>Temp Rise</th>
+                        <th>Vibration RMS</th>
+                        <th>RPM Var</th>
+                        <th>Current Var</th>
+                        <th>Op Hours</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="featureTableBody">
+                    <tr>
+                        <td colspan="11" class="text-center py-4 text-secondary">
+                            <div class="spinner-border spinner-border-sm text-cyan me-2" role="status"></div>
+                            Loading engineered fluid features...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/module1.js') }}"></script>
+{% endblock %}

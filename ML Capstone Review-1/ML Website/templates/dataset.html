@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+
+{% block title %}Dataset Management - Industrial Pump Telemetry{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h2 class="font-outfit fw-bold text-white mb-0">Dataset Management & Telemetry Storage</h2>
+        <p class="text-secondary small mb-0">Manage uploaded CSV telemetry files, view SQLite database logs, and inspect raw sensor readings.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <button class="btn btn-cyan btn-sm" id="btnReloadSampleDataset">
+            <i class="fa-solid fa-rotate-right me-1"></i> Regenerate 800-Record Synthetic Pump Dataset
+        </button>
+    </div>
+</div>
+
+<!-- Row 1: Upload History & Stats -->
+<div class="row g-4 mb-4">
+    <div class="col-lg-5">
+        <div class="card-industrial h-100">
+            <div class="card-header-industrial">
+                <h5 class="card-title-industrial text-white">
+                    <i class="fa-solid fa-folder-open text-cyan me-2"></i>Uploaded Datasets Log
+                </h5>
+            </div>
+            <div class="card-body-industrial p-0">
+                <div class="table-responsive">
+                    <table class="table table-industrial mb-0">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Filename</th>
+                                <th>Upload Date</th>
+                                <th>Records</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if datasets %}
+                                {% for ds in datasets %}
+                                <tr>
+                                    <td>{{ ds.id }}</td>
+                                    <td class="fw-semibold text-white">{{ ds.filename }}</td>
+                                    <td class="small text-secondary">{{ ds.upload_time }}</td>
+                                    <td><span class="badge bg-dark border border-secondary">{{ ds.record_count }}</span></td>
+                                    <td>
+                                        {% if ds.is_active %}
+                                        <span class="badge badge-normal">ACTIVE</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">INACTIVE</span>
+                                        {% if ds.is_active %}{% endif %}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center py-3 text-secondary">No datasets uploaded yet.</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Dataset Summary -->
+    <div class="col-lg-7">
+        <div class="card-industrial h-100">
+            <div class="card-header-industrial">
+                <h5 class="card-title-industrial text-white">
+                    <i class="fa-solid fa-database text-emerald me-2"></i>Active Telemetry Database Overview
+                </h5>
+            </div>
+            <div class="card-body-industrial">
+                <div class="row g-3 text-center mb-3">
+                    <div class="col-md-4">
+                        <div class="p-3 bg-dark rounded border border-dark">
+                            <small class="text-secondary d-block">Active Records</small>
+                            <span class="h3 font-outfit text-cyan fw-bold mb-0">{{ active_count }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 bg-dark rounded border border-dark">
+                            <small class="text-secondary d-block">Sensor Parameters</small>
+                            <span class="h3 font-outfit text-emerald fw-bold mb-0">10</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 bg-dark rounded border border-dark">
+                            <small class="text-secondary d-block">Database Engine</small>
+                            <span class="h3 font-outfit text-warning fw-bold mb-0">SQLite 3</span>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="text-secondary small mb-0">
+                    Sensor parameters stored: <code class="text-cyan">timestamp, pressure, flow_rate, temperature, vibration, rpm, motor_current, pump_head, operating_hours, failure_status</code>.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Raw Sensor Telemetry Table Preview -->
+<div class="card-industrial">
+    <div class="card-header-industrial">
+        <h5 class="card-title-industrial text-white">
+            <i class="fa-solid fa-table text-cyan me-2"></i>Active Sensor Telemetry Preview (First 50 Rows)
+        </h5>
+    </div>
+    <div class="card-body-industrial p-0">
+        <div class="table-responsive" style="max-height: 450px;">
+            <table class="table table-industrial table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Timestamp</th>
+                        <th>Pressure (bar)</th>
+                        <th>Flow Rate (L/min)</th>
+                        <th>Temp (°C)</th>
+                        <th>Vibration (mm/s)</th>
+                        <th>RPM</th>
+                        <th>Current (A)</th>
+                        <th>Pump Head (m)</th>
+                        <th>Op Hours</th>
+                        <th>Failure Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if sample_records %}
+                        {% for r in sample_records %}
+                        <tr>
+                            <td>{{ r.id }}</td>
+                            <td class="small font-mono text-secondary">{{ r.timestamp }}</td>
+                            <td class="text-cyan fw-bold">{{ r.pressure }}</td>
+                            <td>{{ r.flow_rate }}</td>
+                            <td class="text-amber">{{ r.temperature }}</td>
+                            <td class="text-rose">{{ r.vibration }}</td>
+                            <td>{{ r.rpm }}</td>
+                            <td>{{ r.motor_current }}</td>
+                            <td class="text-emerald">{{ r.pump_head }}</td>
+                            <td class="small text-secondary">{{ r.operating_hours }}</td>
+                            <td>
+                                {% if r.failure_status == 0 %}
+                                <span class="badge badge-normal">0: NORMAL</span>
+                                {% elif r.failure_status == 1 %}
+                                <span class="badge badge-warning">1: WARNING</span>
+                                {% else %}
+                                <span class="badge badge-failure">2: POTENTIAL FAILURE</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="11" class="text-center py-4 text-secondary">No sensor telemetry records found in database.</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

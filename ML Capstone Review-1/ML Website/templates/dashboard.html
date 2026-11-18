@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+
+{% block title %}Executive Industrial Dashboard - Pump Predictive Maintenance{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h2 class="font-outfit fw-bold text-white mb-0">Industrial Control Dashboard</h2>
+        <p class="text-secondary small mb-0">Real-time pump telemetry KPI monitoring, failure risk indicators, and recent prediction logs.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <button class="btn btn-outline-cyan btn-sm" id="btnRefreshDashboard">
+            <i class="fa-solid fa-arrows-rotate me-1"></i> Refresh Monitoring
+        </button>
+    </div>
+</div>
+
+<!-- Top KPI Cards Row -->
+<div class="row g-3 mb-4">
+    <div class="col-lg-3 col-md-6">
+        <div class="kpi-card kpi-success" id="kpiStatusCard">
+            <i class="fa-solid fa-heart-pulse kpi-icon text-emerald"></i>
+            <span class="kpi-label">Equipment Status</span>
+            <div class="kpi-value text-emerald" id="dashStatusValue">NORMAL</div>
+            <small class="kpi-subtext" id="dashStatusSub">All parameters nominal</small>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="kpi-card" id="kpiRiskCard">
+            <i class="fa-solid fa-shield-cat kpi-icon text-cyan"></i>
+            <span class="kpi-label">Failure Risk Percentage</span>
+            <div class="kpi-value text-cyan" id="dashRiskValue">12.4%</div>
+            <div class="progress mt-1" style="height: 6px;">
+                <div class="progress-bar bg-cyan" id="dashRiskBar" role="progressbar" style="width: 12.4%;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-2 col-md-4 col-6">
+        <div class="kpi-card">
+            <i class="fa-solid fa-gauge-high kpi-icon text-cyan"></i>
+            <span class="kpi-label">Pressure</span>
+            <div class="kpi-value text-cyan" id="dashPressureValue">4.1 bar</div>
+            <small class="kpi-subtext">Operating pressure</small>
+        </div>
+    </div>
+
+    <div class="col-lg-2 col-md-4 col-6">
+        <div class="kpi-card">
+            <i class="fa-solid fa-water kpi-icon text-cyan"></i>
+            <span class="kpi-label">Flow Rate</span>
+            <div class="kpi-value text-cyan" id="dashFlowValue">178 L/m</div>
+            <small class="kpi-subtext">Volumetric discharge</small>
+        </div>
+    </div>
+
+    <div class="col-lg-2 col-md-4 col-6">
+        <div class="kpi-card">
+            <i class="fa-solid fa-temperature-three-quarters kpi-icon text-amber"></i>
+            <span class="kpi-label">Temperature</span>
+            <div class="kpi-value text-amber" id="dashTempValue">48.2 °C</div>
+            <small class="kpi-subtext">Bearing temperature</small>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-6 col-lg-3">
+        <div class="kpi-card">
+            <i class="fa-solid fa-wave-square kpi-icon text-rose"></i>
+            <span class="kpi-label">Vibration RMS</span>
+            <div class="kpi-value text-rose" id="dashVibValue">1.18 mm/s</div>
+            <small class="kpi-subtext">ISO 10816 norm</small>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-3">
+        <div class="kpi-card">
+            <i class="fa-solid fa-rotate kpi-icon text-emerald"></i>
+            <span class="kpi-label">RPM Speed</span>
+            <div class="kpi-value text-emerald" id="dashRPMValue">2940</div>
+            <small class="kpi-subtext">Motor revs/min</small>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-3">
+        <div class="kpi-card">
+            <i class="fa-solid fa-database kpi-icon text-primary"></i>
+            <span class="kpi-label">Processed Telemetry</span>
+            <div class="kpi-value text-primary" id="dashRecordCount">804</div>
+            <small class="kpi-subtext">Records in database</small>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-3">
+        <div class="kpi-card">
+            <i class="fa-solid fa-brain kpi-icon text-emerald"></i>
+            <span class="kpi-label">Active Model</span>
+            <div class="kpi-value text-emerald" id="dashModelName">Random Forest</div>
+            <small class="kpi-subtext">98.5% Accuracy</small>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Section -->
+<div class="row g-4 mb-4">
+    <!-- Live Telemetry Trends -->
+    <div class="col-lg-8">
+        <div class="card-industrial h-100">
+            <div class="card-header-industrial">
+                <h5 class="card-title-industrial text-white">
+                    <i class="fa-solid fa-chart-area text-cyan me-2"></i>Multi-Sensor Telemetry Trends (Pressure, Temp, Vib, Flow)
+                </h5>
+            </div>
+            <div class="card-body-industrial p-3">
+                <canvas id="chartDashboardTrends" height="240"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Distribution Pie -->
+    <div class="col-lg-4">
+        <div class="card-industrial h-100">
+            <div class="card-header-industrial">
+                <h5 class="card-title-industrial text-white">
+                    <i class="fa-solid fa-chart-pie text-emerald me-2"></i>Condition Distribution
+                </h5>
+            </div>
+            <div class="card-body-industrial p-3 text-center">
+                <canvas id="chartStatusPie" height="240"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Predictions Log Table -->
+<div class="card-industrial mb-4">
+    <div class="card-header-industrial">
+        <h5 class="card-title-industrial text-white">
+            <i class="fa-solid fa-clock-rotate-left text-cyan me-2"></i>Recent Prediction Log & Diagnostic History
+        </h5>
+        <a href="{{ url_for('module2') }}" class="btn btn-outline-cyan btn-sm">New Manual Prediction</a>
+    </div>
+    <div class="card-body-industrial p-0">
+        <div class="table-responsive">
+            <table class="table table-industrial table-hover mb-0" id="recentPredictionsTable">
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Pressure</th>
+                        <th>Flow Rate</th>
+                        <th>Temperature</th>
+                        <th>Vibration</th>
+                        <th>Predicted Status</th>
+                        <th>Risk Score</th>
+                        <th>Recommendation</th>
+                    </tr>
+                </thead>
+                <tbody id="recentPredictionsBody">
+                    <tr>
+                        <td colspan="8" class="text-center py-4 text-secondary">
+                            <div class="spinner-border spinner-border-sm text-cyan me-2" role="status"></div>
+                            Loading prediction history...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

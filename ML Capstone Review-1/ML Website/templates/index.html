@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Capstone Project ML Pipeline{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="row align-items-center my-3 g-4">
+    <div class="col-lg-8">
+        <div class="badge bg-cyan-subtle text-cyan border border-cyan px-3 py-2 rounded-pill mb-3">
+            <i class="fa-solid fa-graduation-cap me-2"></i>B.Tech CSE Capstone Project Presentation
+        </div>
+        <h1 class="display-5 fw-bold font-outfit text-white mb-2">
+            End-to-End ML Pipeline for Predictive Maintenance of <span class="text-gradient">Industrial Pumps and Compressors</span>
+        </h1>
+        <h5 class="text-cyan font-outfit fw-normal mb-3">
+            Fluid Dynamics + Machine Learning for Early Equipment Failure Detection
+        </h5>
+        <p class="lead text-secondary mb-4" style="max-width: 780px;">
+            A comprehensive industrial engineering application integrating hydraulic telemetry processing, fluid dynamics metrics, missing data imputation, feature extraction, and machine learning models (Decision Trees, Random Forest, XGBoost) to accurately classify pump health and prescribe proactive maintenance.
+        </p>
+        
+        <div class="d-flex flex-wrap gap-3">
+            <a href="{{ url_for('module1') }}" class="btn btn-primary btn-lg px-4 shadow">
+                <i class="fa-solid fa-water me-2"></i>Module 1: Fluid Analysis
+            </a>
+            <a href="{{ url_for('module2') }}" class="btn btn-emerald btn-lg px-4 shadow text-white" style="background-color: var(--accent-emerald);">
+                <i class="fa-solid fa-brain me-2"></i>Module 2: ML Maintenance
+            </a>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-cyan btn-lg px-4">
+                <i class="fa-solid fa-chart-line me-2"></i>Executive Dashboard
+            </a>
+            <a href="{{ url_for('dataset_management') }}" class="btn btn-outline-secondary btn-lg px-4">
+                <i class="fa-solid fa-database me-2"></i>Dataset Management
+            </a>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card-industrial p-4 text-center">
+            <div class="mb-3">
+                <i class="fa-solid fa-gear fa-spin text-cyan" style="font-size: 3.5rem; --fa-animation-duration: 12s;"></i>
+            </div>
+            <h5 class="font-outfit text-white fw-bold">Live System Status</h5>
+            <p class="text-secondary small mb-3">Telemetry Data Acquisition & ML Engine</p>
+            <div class="d-flex justify-content-around border-top border-dark pt-3">
+                <div>
+                    <div class="text-cyan fw-bold h4 mb-0">2</div>
+                    <small class="text-muted">Core Modules</small>
+                </div>
+                <div>
+                    <div class="text-emerald fw-bold h4 mb-0">3</div>
+                    <small class="text-muted">ML Algorithms</small>
+                </div>
+                <div>
+                    <div class="text-amber fw-bold h4 mb-0">800+</div>
+                    <small class="text-muted">Sensor Logs</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr class="border-secondary my-5">
+
+<!-- Two-Module Architecture Overview -->
+<div class="row mb-5">
+    <div class="col-12 text-center mb-4">
+        <h3 class="font-outfit fw-bold text-white">System Architecture: Two-Module Design</h3>
+        <p class="text-secondary">Strict two-module partition adhering to capstone engineering requirements</p>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card-industrial h-100 p-4 border-start border-cyan border-4">
+            <div class="d-flex align-items-center mb-3">
+                <div class="icon-square bg-dark text-cyan p-3 rounded-3 me-3">
+                    <i class="fa-solid fa-water fa-2x"></i>
+                </div>
+                <div>
+                    <span class="badge bg-cyan text-dark mb-1">MODULE 1</span>
+                    <h4 class="font-outfit text-white mb-0">Fluid Dynamics Data Acquisition & Analysis</h4>
+                </div>
+            </div>
+            <p class="text-secondary">
+                Processes raw multi-sensor telemetry (Pressure, Flow Rate, Temperature, Vibration, RPM, Current, Pump Head) with missing value imputation, outlier handling, and rolling filter noise reduction.
+            </p>
+            <ul class="list-unstyled text-secondary small">
+                <li class="mb-2"><i class="fa-solid fa-check text-cyan me-2"></i>CSV Telemetry Upload & Column Validation</li>
+                <li class="mb-2"><i class="fa-solid fa-check text-cyan me-2"></i>IQR & Z-score Outlier Detection and Capping</li>
+                <li class="mb-2"><i class="fa-solid fa-check text-cyan me-2"></i>Pump Head, Pressure Differential & Vibration RMS Engine</li>
+                <li class="mb-2"><i class="fa-solid fa-check text-cyan me-2"></i>Feature Engineering (Mean pressure, Flow variation, Thermal rise)</li>
+            </ul>
+            <a href="{{ url_for('module1') }}" class="btn btn-outline-cyan btn-sm mt-3">Launch Module 1 &rarr;</a>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card-industrial h-100 p-4 border-start border-emerald border-4" style="border-left-color: var(--accent-emerald) !important;">
+            <div class="d-flex align-items-center mb-3">
+                <div class="icon-square bg-dark text-emerald p-3 rounded-3 me-3">
+                    <i class="fa-solid fa-brain fa-2x"></i>
+                </div>
+                <div>
+                    <span class="badge bg-emerald text-white mb-1" style="background-color: var(--accent-emerald);">MODULE 2</span>
+                    <h4 class="font-outfit text-white mb-0">ML Predictive Maintenance & Visualization</h4>
+                </div>
+            </div>
+            <p class="text-secondary">
+                Trains Scikit-learn & XGBoost supervised classification models on 80/20 split dataset to accurately forecast failure probability, classify equipment status, and display diagnostic cards.
+            </p>
+            <ul class="list-unstyled text-secondary small">
+                <li class="mb-2"><i class="fa-solid fa-check text-emerald me-2"></i>Decision Tree, Random Forest & XGBoost Classifiers</li>
+                <li class="mb-2"><i class="fa-solid fa-check text-emerald me-2"></i>Accuracy, Precision, Recall, F1 & Confusion Matrix Evaluation</li>
+                <li class="mb-2"><i class="fa-solid fa-check text-emerald me-2"></i>Equipment Status: NORMAL, WARNING, POTENTIAL FAILURE</li>
+                <li class="mb-2"><i class="fa-solid fa-check text-emerald me-2"></i>Actionable Maintenance Recommendations & Risk Gauges</li>
+            </ul>
+            <a href="{{ url_for('module2') }}" class="btn btn-outline-success btn-sm mt-3" style="color: var(--accent-emerald); border-color: var(--accent-emerald);">Launch Module 2 &rarr;</a>
+        </div>
+    </div>
+</div>
+
+<!-- Academic Capstone Features Section -->
+<div class="card-industrial mb-5">
+    <div class="card-header-industrial">
+        <h4 class="card-title-industrial text-white">
+            <i class="fa-solid fa-book-bookmark text-cyan me-2"></i>Academic Capstone Specifications & Problem Overview
+        </h4>
+    </div>
+    <div class="card-body-industrial">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="p-3 bg-dark rounded-3 h-100 border border-dark">
+                    <h5 class="text-cyan font-outfit fw-bold mb-2">
+                        <i class="fa-solid fa-triangle-exclamation me-2"></i>Problem Statement
+                    </h5>
+                    <p class="text-secondary small mb-0">
+                        Industrial pumps and compressors frequently suffer catastrophic failures due to abnormal pressure drops, flow turbulence, thermal breakdown, and vibration friction. Traditional scheduled maintenance often detects flaws too late after severe hardware degradation. This capstone project integrates fluid dynamics physics formulas with machine learning pipelines to detect early anomaly signatures and prevent unplanned downtime.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="p-3 bg-dark rounded-3 h-100 border border-dark">
+                    <h5 class="text-emerald font-outfit fw-bold mb-2">
+                        <i class="fa-solid fa-bullseye me-2"></i>Key Project Objectives
+                    </h5>
+                    <ol class="text-secondary small ps-3 mb-0">
+                        <li class="mb-1">Acquire and clean real-time fluid dynamic telemetry parameters.</li>
+                        <li class="mb-1">Perform missing value imputation and noise filtering.</li>
+                        <li class="mb-1">Engineer fluid features (Head, Pressure Drop, Vibration RMS).</li>
+                        <li class="mb-1">Train Decision Tree, Random Forest, and XGBoost models.</li>
+                        <li class="mb-1">Provide interactive executive dashboard with risk alerts.</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="p-3 bg-dark rounded-3 h-100 border border-dark">
+                    <h5 class="text-amber font-outfit fw-bold mb-2">
+                        <i class="fa-solid fa-square-poll-vertical me-2"></i>Expected Outcome
+                    </h5>
+                    <p class="text-secondary small mb-0">
+                        A fully functional, web-based predictive maintenance application capable of continuously ingesting sensor data, computing fluid dynamic indicators, predicting failure risk percentages, classifying equipment into NORMAL, WARNING, or POTENTIAL FAILURE states, and dispensing automated repair prescriptions.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Technologies Used -->
+<div class="card-industrial">
+    <div class="card-header-industrial">
+        <h5 class="card-title-industrial text-white">
+            <i class="fa-solid fa-microchip text-cyan me-2"></i>Technology Stack & Libraries
+        </h5>
+    </div>
+    <div class="card-body-industrial">
+        <div class="row text-center g-3">
+            <div class="col-6 col-md-2">
+                <div class="p-3 bg-dark rounded-3 border border-dark">
+                    <i class="fa-brands fa-python fa-2x text-warning mb-2"></i>
+                    <h6 class="text-white mb-0">Python 3.11</h6>
+                    <small class="text-muted">Core Backend</small>
+                </div>
+            </div>
+            <div class="col-6 col-md-2">
+                <div class="p-3 bg-dark rounded-3 border border-dark">
+                    <i class="fa-solid fa-flask fa-2x text-white mb-2"></i>
+                    <h6 class="text-white mb-0">Flask</h6>
+                    <small class="text-muted">Web Framework</small>
+                </div>
+            </div>
+            <div class="col-6 col-md-2">
+                <div class="p-3 bg-dark rounded-3 border border-dark">
+                    <i class="fa-solid fa-database fa-2x text-cyan mb-2"></i>
+                    <h6 class="text-white mb-0">SQLite</h6>
+                    <small class="text-muted">Database Storage</small>
+                </div>
+            </div>
+            <div class="col-6 col-md-2">
+                <div class="p-3 bg-dark rounded-3 border border-dark">
+                    <i class="fa-solid fa-brain fa-2x text-emerald mb-2"></i>
+                    <h6 class="text-white mb-0">Scikit-learn</h6>
+                    <small class="text-muted">ML Pipelines</small>
+                </div>
+            </div>
+            <div class="col-6 col-md-2">
+                <div class="p-3 bg-dark rounded-3 border border-dark">
+                    <i class="fa-solid fa-chart-pie fa-2x text-info mb-2"></i>
+                    <h6 class="text-white mb-0">Pandas / NumPy</h6>
+                    <small class="text-muted">Data Analytics</small>
+                </div>
+            </div>
+            <div class="col-6 col-md-2">
+                <div class="p-3 bg-dark rounded-3 border border-dark">
+                    <i class="fa-solid fa-chart-line fa-2x text-rose mb-2"></i>
+                    <h6 class="text-white mb-0">Chart.js</h6>
+                    <small class="text-muted">Visualizations</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
